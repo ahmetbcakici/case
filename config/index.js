@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 export { default as swaggerConfig } from './swagger.config';
 
 const { DB_HOST, DB_USER, DB_PASS, DB_NAME, PORT } = process.env;

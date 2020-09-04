@@ -22,19 +22,16 @@ export default (req, res, next) => {
       /* @TODO: some incorrect things on combining ( & )*/
 
       let webURL = `https://www.trendyol.com/brand/name-p-${contentId}?`
-      webURL += (campaignId != deeplink ? `&boutiqueId=${campaignId}` : '')
-      webURL += (merchantId != deeplink ? `&merchantId=${merchantId}` : '')
+      webURL += (campaignId !== deeplink ? `&boutiqueId=${campaignId}` : '')
+      webURL += (merchantId !== deeplink ? `&merchantId=${merchantId}` : '')
 
       return res.json({ webURL })
     case 'Search':
       const query = deeplink.split('Query=').pop().split(/\W+/)[0];
-      //console.log(query)
       return res.json({
         webURL: `https://www.trendyol.com/tum--urunler?q=${query}`
       })
     default:
-      return res.json({
-        webURL: `https://www.trendyol.com`
-      })
+      return res.json({ webURL: `https://www.trendyol.com` })
   }
 }

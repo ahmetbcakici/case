@@ -24,8 +24,8 @@ export default (req, res, next) => {
     const merchantId = path.split('merchantId=').pop().split('&')[0];
 
     let deeplink = `ty://?Page=Product&ContentId=${contentId}`
-    deeplink += (boutiqueId != path ? `&CampaignId=${boutiqueId}` : '')
-    deeplink += (merchantId != path ? `&MerchantId=${merchantId}` : '')
+    deeplink += (boutiqueId !== path ? `&CampaignId=${boutiqueId}` : '')
+    deeplink += (merchantId !== path ? `&MerchantId=${merchantId}` : '')
     /* @TODO: some incorrect things on validation */
     return res.json({ deeplink })
   }
