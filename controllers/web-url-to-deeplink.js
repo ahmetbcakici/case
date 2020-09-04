@@ -7,7 +7,7 @@ export default (req, res, next) => {
     const err = new Error('Not correct webURL!')
     return next(err);
   }
-  const path = getURLPath(webURL) // can result=>['/butik/liste/12','/casio/erkek-p-1231','/tum--urunler?q=elbise']
+  const path = getURLPath(webURL) // can result => ['/butik/liste/12','/casio/erkek-p-1231','/tum--urunler?q=elbise']
 
   const isHomepage = /\/butik\/liste\/[a-zA-Z]+/.test(path)
   if (isHomepage) {
@@ -26,7 +26,7 @@ export default (req, res, next) => {
     let deeplink = `ty://?Page=Product&ContentId=${contentId}`
     deeplink += (boutiqueId != path ? `&CampaignId=${boutiqueId}` : '')
     deeplink += (merchantId != path ? `&MerchantId=${merchantId}` : '')
-    /* check for tests */
+    /* @TODO: some incorrect things on validation */
     return res.json({ deeplink })
   }
 

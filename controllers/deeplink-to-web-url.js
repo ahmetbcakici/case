@@ -1,23 +1,34 @@
-//import { getNameById, getPage, getQuery, getContentIdFromURL, getIdByName, generateCode, getBoutiqueIdFromURL, getCampaignIdFromLink, getContentIdFromLink, getMerchantIdFromLink, getMerchantIdFromURL, getQueryFromLink, getSectionIdFromLink, getSectionName, getURLPath } from '../utils'
+import { deeplinkCheck, getPage } from '../utils'
 
-export default (req, res) => {
+export default (req, res, next) => {
   const { deeplink } = req.body;
   /* @TODO: store coming request on db & log */
+  if (!deeplinkCheck(deeplink)) {
+    const err = new Error('Not correct Deeplink!')
+    return next(err);
+  }
+
   const page = getPage(deeplink)
   switch (page) {
     case 'Home':
-      const sectionId = getSectionIdFromLink(deeplink)
-      const sectionName = getNameById(sectionId)
-      return res.json({ webURL: `https://www.trendyol.com/butik/liste/${sectionName}` })
+      const sectionId = deeplink.split('SectionId=').pop().split('&')[0];
+      console.log(sectionId)
+      /* @TODO: find name by id */
+      return res.json({ webURL: `https://www.trendyol.com/butik/liste/${'sectionName'}` })
     case 'Product':
-      const contentId = getContentIdFromLink(deeplink)
-      const campaignId = getCampaignIdFromLink(deeplink)
-      const merchantId = getMerchantIdFromLink(deeplink)
-      return res.json({
-        webURL: `https://www.trendyol.com/brand/name-p-${contentId}?boutiqueId=${campaignId}&merchantId=${merchantId}`
-      })
+      const contentId = deeplink.split('ContentId=').pop().split('&')[0];
+      const campaignId = deeplink.split('CampaignId=').pop().split('&')[0];
+      const merchantId = deeplink.split('MerchantId=').pop().split('&')[0];
+      /* @TODO: some incorrect things on combining ( & )*/
+
+      let webURL = `https://www.trendyol.com/brand/name-p-${contentId}?`
+      webURL += (campaignId != deeplink ? `&boutiqueId=${campaignId}` : '')
+      webURL += (merchantId != deeplink ? `&merchantId=${merchantId}` : '')
+
+      return res.json({ webURL })
     case 'Search':
-      const query = getQueryFromLink(deeplink)
+      const query = deeplink.split('Query=').pop().split(/\W+/)[0];
+      //console.log(query)
       return res.json({
         webURL: `https://www.trendyol.com/tum--urunler?q=${query}`
       })
