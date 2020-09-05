@@ -1,20 +1,30 @@
 import { getURLPath, urlCheck } from '../utils'
+import * as sectionService from '../services/section.service'
+import * as conversionService from '../services/conversion.service'
 
-export default (req, res, next) => {
+export default async (req, res, next) => {
   const { webURL } = req.body;
-  /* @TODO: store coming request on db & log */
+
   if (!urlCheck(webURL)) {
     const err = new Error('Not correct webURL!')
     return next(err);
   }
   const path = getURLPath(webURL) // can result => ['/butik/liste/12','/casio/erkek-p-1231','/tum--urunler?q=elbise']
 
+  let deeplink = await conversionService.getConversionIfExisting({ webURL })
+  if (deeplink) return res.json({ deeplink })
+  deeplink = 'ty://?Page=Home'
+
   const isHomepage = /\/butik\/liste\/[a-zA-Z]+/.test(path)
   if (isHomepage) {
     const sectionName = path.split('/butik/liste/')[1]
-    console.log(sectionName)
-    /* @TODO: find id by name */
-    return res.json({ deeplink: `ty://?Page=Home&SectionId=${1}` })
+    const sectionId = await sectionService.findSectionIdByName({ sectionName })
+    if (!sectionId) {
+      const err = new Error(`Could not find section with this name: ${sectionName}`)
+      return next(err);
+    }
+
+    deeplink = `ty://?Page=Home&SectionId=${sectionId}`
   }
 
   const isProduct = /\/\w+\/[\w-]+-p-\d+/.test(path)
@@ -23,21 +33,21 @@ export default (req, res, next) => {
     const boutiqueId = path.split('boutiqueId=').pop().split('&')[0];
     const merchantId = path.split('merchantId=').pop().split('&')[0];
 
-    let deeplink = `ty://?Page=Product&ContentId=${contentId}`
-    deeplink += (boutiqueId !== path ? `&CampaignId=${boutiqueId}` : '')
-    deeplink += (merchantId !== path ? `&MerchantId=${merchantId}` : '')
+    let link = `ty://?Page=Product&ContentId=${contentId}`
+    link += (boutiqueId !== path ? `&CampaignId=${boutiqueId}` : '')
+    link += (merchantId !== path ? `&MerchantId=${merchantId}` : '')
     /* @TODO: some incorrect things on validation */
-    return res.json({ deeplink })
+    deeplink = link
   }
 
   const isSearch = /\/tum--urunler\?q=.+/.test(path)
   if (isSearch) {
     const query = path.split('tum--urunler?q=')[1];
-    return res.json({ deeplink: `ty://?Page=Search&Query=${query}` })
+    deeplink = `ty://?Page=Search&Query=${query}`
   }
 
-  /* other */
-  return res.json({ deeplink: 'ty://?Page=Home' })
+  await conversionService.saveConversion({ deeplink, webURL }) // @TODO: think on error handling
+  res.json({ deeplink })
 }
 
 /*

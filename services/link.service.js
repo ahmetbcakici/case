@@ -1,4 +1,4 @@
-import { con } from './db'
+import { con } from '../index'
 
 export const getCodeByLink = ({ link }) => new Promise((resolve, reject) => {
   con.query(`SELECT short_code as shortCode FROM links WHERE url='${link}'`, (err, result) => {
