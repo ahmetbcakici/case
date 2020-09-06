@@ -1,8 +1,8 @@
-require('dotenv').config();
+require('dotenv').config()
 
-export { default as swaggerConfig } from './swagger.config';
+export { default as swaggerConfig } from './swagger.config'
 
-const { DB_HOST, DB_USER, DB_PASS, DB_NAME, PORT } = process.env;
+const { DB_HOST, DB_USER, DB_PASS, DB_NAME, PORT } = process.env
 
 export const api = {
   port: PORT || 8080,
@@ -11,5 +11,5 @@ export const api = {
   dbPass: DB_PASS,
   dbName: DB_NAME,
   prefix: "/api",
-  specs: "/docs",
+  specs: "/docs"
 }

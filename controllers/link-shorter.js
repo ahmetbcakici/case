@@ -40,7 +40,6 @@ export default async (req, res, next) => {
     return next(err)
   }
 
-  /* @TODO: query improvement (using join etc.) */
   const result = await conversionService.getConversionIfExisting({ deeplink: link, webURL: link })
   if (result) {
     const shortCode = await conversionService.getShortCodeByConversionId({ conversionId: result.conversionId })

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node -r esm index.js",
+    "test": "jest --forceExit --detectOpenHandles  --watchAll --maxWorkers=1"
   },
   "keywords": [],
   "author": "Ahmet Buğra Çakıcı",
@@ -16,13 +17,17 @@
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "helmet": "^4.1.0",
+    "jest-esm-transformer": "^1.0.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "randomstring": "^1.1.5",
+    "sinon": "^9.0.3",
+    "supertest": "^4.0.2",
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
-    "jest": "^26.4.2"
+    "jest": "^26.4.2",
+    "mock-req-res": "^1.2.0"
   }
 }
