@@ -6,21 +6,22 @@ export default {
       version: '1.0.0',
       description: 'Lorem ipsum dolor sit amet.',
       license: {
-        name: 'Unknown',
+        name: 'MIT',
         url: 'https://choosealicense.com/licenses/mit/',
       },
       contact: {
-        name: 'Mandarin',
-        url: 'https://yesilscience.com/mandarin',
-        email: 'lorem@ipsum.com',
+        name: 'Trendyol',
+        url: 'https://trendyol.com',
+        email: 'info@trendyol.com',
       },
     },
     servers: [
       {
-        url: 'http://localhost:8080/api/v1',
+        url: 'http://localhost:8080/api/',
       },
     ],
   },
   apis: [
-  ],
-};
+    './controllers/*'
+  ]
+}
