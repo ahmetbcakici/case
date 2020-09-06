@@ -43,7 +43,7 @@ export default async (req, res, next) => {
   const result = await conversionService.getConversionIfExisting({ deeplink: link, webURL: link })
   if (result) {
     const shortCode = await conversionService.getShortCodeByConversionId({ conversionId: result.conversionId })
-    if (shortCode) return res.json({ msg: `This link is shortened already as http://localhost:8080/api/${shortCode}` })
+    if (shortCode) return res.json({ msg: `This link is shortened already as http://localhost:8080/api/get-links/${shortCode}` })
   }
 
   const isDeeplink = deeplinkCheck(link)
@@ -66,5 +66,5 @@ export default async (req, res, next) => {
     data = await linkService.getConversionIdByCode({ code })
   } while (data)
   await linkService.saveShortenedLink({ code, conversionId })
-  res.json({ shortlink: `http://localhost:8080/api/${code}` })
+  res.json({ shortlink: `http://localhost:8080/api/get-links/${code}` })
 }
